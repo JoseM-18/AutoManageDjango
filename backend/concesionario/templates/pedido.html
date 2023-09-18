@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Pedidos</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Auto</th>
+        <th>Cantidad</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pedido in pedidos %}
+        <tr>
+          <td>{{ pedido.id }}</td>
+          <td>{{ pedido.cliente }}</td>
+          <td>{{ pedido.auto }}</td>
+          <td>{{ pedido.cantidad }}</td>
+          <td>{{ pedido.fecha }}</td>
+          <td>
+            <a href="{% url 'editar_pedido' pedido.id %}">Editar</a>
+            <a href="{% url 'eliminar_pedido' pedido.id %}">Eliminar</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="6">No hay pedidos.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'agregar_pedido' %}">Agregar pedido</a>
+{% endblock %}

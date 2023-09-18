@@ -1,0 +1,1 @@
+# here will be the settings that will be used in the project

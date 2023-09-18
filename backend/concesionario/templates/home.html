@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Bienvenido al Concesionario de Automóviles</h1>
+  <p>Seleccione una opción:</p>
+  <ul>
+    <li><a href="{% url 'inventario' %}">Inventario</a></li>
+    <li><a href="{% url 'pedido' %}">Pedidos</a></li>
+  </ul>
+{% endblock %}
