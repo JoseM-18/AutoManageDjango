@@ -1,1 +1,56 @@
-/frontend/node_modules
+# Directorios y archivos generados por Django
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+__init__.py
+
+# Archivos de migraciones de Django
+*.sqlite3
+*.db
+
+# Entorno virtual de Python
+venv/
+env/
+ENV/
+
+# Archivos de configuración local (ajústalos según sea necesario)
+*.env
+
+# Archivos de registro y datos de prueba
+log/
+db.sqlite3
+media/
+
+# Archivos generados por IDE y editores de texto (ajústalos según sea necesario)
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Archivos de dependencias de Python (por ejemplo, generados por pip)
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+*.egg
+
+# Archivos de caché y registros
+*.log
+*.cache
+
+# Archivos de respaldo de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos generados por la ejecución de pruebas
+.coverage
+.pytest_cache/
+
+# Archivos de registro de errores
+errors.log
