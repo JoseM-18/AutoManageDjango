@@ -15,7 +15,9 @@ router.register(r'inventario_piezas', views.InventarioPiezaViewSet)
 router.register(r'inventario_vehiculos', views.InventarioVehiculoViewSet)
 router.register(r'ordenes', views.OrdenPiezaViewSet)
 router.register(r'ventas', views.VentaViewSet)
+# router.register(r'hello', views.HelloView.as_view())
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('hello/', views.HelloView.as_view(), name='hello')
 ]
