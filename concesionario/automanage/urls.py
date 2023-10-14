@@ -1,6 +1,10 @@
 from django.urls import path, include
 from rest_framework import routers
 from automanage import views
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 router = routers.DefaultRouter()
 router.register(r'vehiculos', views.VehiculoViewSet)
@@ -19,5 +23,7 @@ router.register(r'ventas', views.VentaViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('hello/', views.HelloView.as_view(), name='hello')
+    path('hello/', views.HelloView.as_view(), name='hello'),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
 ]

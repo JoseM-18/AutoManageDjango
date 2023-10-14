@@ -1,13 +1,19 @@
 from rest_framework import viewsets
 from .serializer import VehiculoSerializer, SucursalSerializer, PiezaSerializer,  UsuarioSerializer, RolSerializer, CotizacionSerializer, OrdenPiezaSerializer, PiezasVehiculoSerializer, InventarioPiezaSerializer, InventarioVehiculoSerializer, OrdenSerializer, VentaSerializer
 from .models import Vehiculo, Sucursal, Pieza,  Usuario, Rol, Cotizacion, OrdenPieza, PiezasVehiculo, InventarioPieza, InventarioVehiculo, Orden, Venta
+from .permission import UserPermission
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
 class HelloView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
+    # Ejemplo de como se van a manejar los accesos a cada endpoint:
+
+    def get_permissions(self):
+        return [UserPermission(
+            roles_required=['Gerente', 'Jefe_Taller'])]
 
     def get(self, request):
         content = {'message': 'Hello, World!'}
@@ -15,6 +21,7 @@ class HelloView(APIView):
 
 
 class VehiculoViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = Vehiculo.objects.all()
     serializer_class = VehiculoSerializer
 
