@@ -1,11 +1,13 @@
-from rest_framework import viewsets
-from .serializer import VehiculoSerializer, SucursalSerializer, PiezaSerializer,  UsuarioSerializer, RolSerializer, CotizacionSerializer, OrdenPiezaSerializer, PiezasVehiculoSerializer, InventarioPiezaSerializer, InventarioVehiculoSerializer, OrdenSerializer, VentaSerializer
+from rest_framework import viewsets, status
+from .serializer import VehiculoSerializer, SucursalSerializer, PiezaSerializer,  UsuarioSerializer, RolSerializer, CotizacionSerializer, OrdenPiezaSerializer, PiezasVehiculoSerializer, InventarioPiezaSerializer, InventarioVehiculoSerializer, OrdenSerializer, VentaSerializer, ChangePasswordSerializer
 from .models import Vehiculo, Sucursal, Pieza,  Usuario, Rol, Cotizacion, OrdenPieza, PiezasVehiculo, InventarioPieza, InventarioVehiculo, Orden, Venta
 from .permission import UserPermission
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate
+from rest_framework.decorators import action
 
 
 class HelloView(APIView):
@@ -46,6 +48,25 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         hashed_password = make_password(password)
         request.data['password'] = hashed_password
         return super().create(request, *args, **kwargs)
+
+    @action(detail=False, methods=['post'])
+    def change_password(self, request):
+        user = request.user
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            old_password = serializer.validated_data['old_password']
+            new_password = serializer.validated_data['new_password']
+
+            if not authenticate(email=user.email, password=old_password):
+                return Response({'detail': 'La contraseña anterior es incorrecta'}, status=status.HTTP_400_BAD_REQUEST)
+
+            user.set_password(new_password)
+            user.save()
+
+            return Response({'detail': 'Contraseña actualizada correctamente'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RolViewSet(viewsets.ModelViewSet):

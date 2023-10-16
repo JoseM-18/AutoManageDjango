@@ -50,6 +50,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+
 class CotizacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cotizacion
