@@ -1,0 +1,5 @@
+django
+pip install django-cors-headers
+pip install django-rest-auth
+pip install django-allauth
+pip install djangorestframework-simplejwt
