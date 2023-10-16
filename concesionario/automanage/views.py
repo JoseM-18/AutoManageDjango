@@ -5,6 +5,7 @@ from .permission import UserPermission
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.contrib.auth.hashers import make_password
 
 
 class HelloView(APIView):
@@ -39,6 +40,12 @@ class PiezaViewSet(viewsets.ModelViewSet):
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
+
+    def create(self, request, *args, **kwargs):
+        password = request.data.get('password')
+        hashed_password = make_password(password)
+        request.data['password'] = hashed_password
+        return super().create(request, *args, **kwargs)
 
 
 class RolViewSet(viewsets.ModelViewSet):

@@ -48,13 +48,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = '__all__'
-        read_only_fields = ('email',)
-
-    def create(self, validated_data):
-        user = Usuario.objects.create(validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
 
 
 class CotizacionSerializer(serializers.ModelSerializer):
