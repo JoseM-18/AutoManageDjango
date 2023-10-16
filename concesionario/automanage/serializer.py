@@ -1,5 +1,22 @@
 from rest_framework import serializers
 from .models import Vehiculo, Sucursal, Pieza, Usuario, Rol, Cotizacion, OrdenPieza, PiezasVehiculo, InventarioPieza, InventarioVehiculo, Orden, Venta
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['user_email'] = user.email
+        token['user_nombre'] = user.nombre
+        token['user_apellido'] = user.apellido
+        token['user_rol'] = user.rol.nombre
+        # ...
+
+        return token
 
 
 class RolSerializer(serializers.ModelSerializer):
@@ -32,6 +49,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
         model = Usuario
         fields = '__all__'
         read_only_fields = ('email',)
+
+    def create(self, validated_data):
+        user = Usuario.objects.create(validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
 class CotizacionSerializer(serializers.ModelSerializer):
