@@ -1,6 +1,8 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from .serializer import VehiculoSerializer, SucursalSerializer, PiezaSerializer,  UsuarioSerializer, RolSerializer, CotizacionSerializer, OrdenPiezaSerializer, PiezasVehiculoSerializer, InventarioPiezaSerializer, InventarioVehiculoSerializer, OrdenSerializer, VentaSerializer, ChangePasswordSerializer
 from .models import Vehiculo, Sucursal, Pieza,  Usuario, Rol, Cotizacion, OrdenPieza, PiezasVehiculo, InventarioPieza, InventarioVehiculo, Orden, Venta
+from .filters import *
 from .permission import UserPermission
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -27,6 +29,8 @@ class VehiculoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Vehiculo.objects.all()
     serializer_class = VehiculoSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = VehiculoFilter
 
 
 class SucursalViewSet(viewsets.ModelViewSet):
