@@ -36,6 +36,8 @@ class VehiculoViewSet(viewsets.ModelViewSet):
 class SucursalViewSet(viewsets.ModelViewSet):
     queryset = Sucursal.objects.all()
     serializer_class = SucursalSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = SucursalFilter
 
 
 class PiezaViewSet(viewsets.ModelViewSet):
@@ -101,6 +103,8 @@ class InventarioPiezaViewSet(viewsets.ModelViewSet):
 class InventarioVehiculoViewSet(viewsets.ModelViewSet):
     queryset = InventarioVehiculo.objects.all()
     serializer_class = InventarioVehiculoSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = InventarioVehiculoFilter
 
 
 class OrdenViewSet(viewsets.ModelViewSet):

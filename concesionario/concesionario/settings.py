@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import logging
 from pathlib import Path
 from datetime import timedelta
 
@@ -177,3 +178,26 @@ SIMPLE_JWT = {
     "TOKEN_OBTAIN_SERIALIZER": "automanage.serializer.MyTokenObtainPairSerializer",
 
 }
+
+#  DESCOMENTAR SI SE QUIEREN VER LOGS DE QUERYS EJECUTADOS
+# LOGGING = {
+#     'version': 1,
+#     'filters': {
+#         'require_debug_true': {
+#             '()': 'django.utils.log.RequireDebugTrue',
+#         }
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'filters': ['require_debug_true'],
+#             'class': 'logging.StreamHandler',
+#         }
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'level': 'DEBUG',
+#             'handlers': ['console'],
+#         }
+#     }
+# }
