@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseUserManager
 # from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
+import uuid
 
 
 class UserManager(BaseUserManager):
@@ -43,6 +44,16 @@ class Rol(models.Model):
         db_table = 'roles'
 
 
+class Sucursal(models.Model):
+    nombre = models.CharField(max_length=255, blank=True, null=True)
+    direccion = models.CharField(max_length=255, blank=True, null=True)
+    fecha_creacion = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'sucursales'
+
+
 class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         unique=True, max_length=255, blank=False, null=False,)
@@ -55,6 +66,10 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now, blank=True)
+    identificacion = models.CharField(
+        unique=True, max_length=15)
+    sucursal = models.ForeignKey(Sucursal, models.DO_NOTHING,
+                                 db_column='id_sucursal', blank=True, null=True)
 
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
@@ -90,16 +105,6 @@ class Vehiculo(models.Model):
     class Meta:
         managed = True
         db_table = 'vehiculos'
-
-
-class Sucursal(models.Model):
-    nombre = models.CharField(max_length=255, blank=True, null=True)
-    direccion = models.CharField(max_length=255, blank=True, null=True)
-    fecha_creacion = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = True
-        db_table = 'sucursales'
 
 
 class InventarioVehiculo(models.Model):
