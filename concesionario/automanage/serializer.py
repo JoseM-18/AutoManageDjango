@@ -14,6 +14,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['user_nombre'] = user.nombre
         token['user_apellido'] = user.apellido
         token['user_rol'] = user.rol.nombre
+        token['user_sucursal_id'] = "" if user.sucursal is None else user.sucursal.id
+        token['user_sucursal_nombre'] = "" if user.sucursal is None else user.sucursal.nombre
         # ...
 
         return token
