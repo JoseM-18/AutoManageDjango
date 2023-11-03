@@ -27,7 +27,11 @@ SECRET_KEY = 'django-insecure-i&r85mpvn&^t#u!r$*-&ke0l4f0*&_-eai&$#no_h*z!)oqd)a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'www.jose-manuel.tech',
+    'jose-manuel.tech',
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -52,8 +56,9 @@ INSTALLED_APPS = [
     'automanage'
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_ALL_ORIGINS = True
+# Configuración de CORS
+CORS_ALLOW_ALL_ORIGINS = True  # Esto permite todas las solicitudes desde cualquier origen.
+CORS_ALLOW_CREDENTIALS = True  # Si necesitas permitir el envío de cookies u otras credenciales.
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
