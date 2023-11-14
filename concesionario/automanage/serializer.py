@@ -50,6 +50,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = '__all__'
+        depth = 1
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -79,12 +80,14 @@ class InventarioPiezaSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventarioPieza
         fields = '__all__'
+        depth = 1
 
 
 class InventarioVehiculoSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventarioVehiculo
         fields = '__all__'
+        depth = 1
 
 
 class OrdenSerializer(serializers.ModelSerializer):
