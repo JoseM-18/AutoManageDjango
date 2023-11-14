@@ -117,6 +117,7 @@ class InventarioVehiculo(models.Model):
     estado = models.CharField(max_length=50, blank=True, null=True)
     placa = models.CharField(max_length=10, blank=True, null=True)
     kilometraje = models.IntegerField(blank=True, null=True)
+    color = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = True

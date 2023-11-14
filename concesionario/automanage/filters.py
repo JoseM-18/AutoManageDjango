@@ -36,5 +36,6 @@ class InventarioVehiculoFilter(django_filters.FilterSet):
             'condicion': ['exact'],
             'estado': ['exact'],
             'placa': ['exact', 'icontains', 'in'],
+            'color': ['exact', 'icontains', 'in'],
             'kilometraje': ['lt', 'gt'],
         }
