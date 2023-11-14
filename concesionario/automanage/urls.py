@@ -9,7 +9,7 @@ from rest_framework_simplejwt.views import (
 router = routers.DefaultRouter()
 router.register(r'vehiculos', views.VehiculoViewSet)
 router.register(r'sucursales', views.SucursalViewSet)
-router.register(r'piezas', views.SucursalViewSet)
+router.register(r'piezas', views.PiezaViewSet)
 router.register(r'usuarios', views.UsuarioViewSet)
 router.register(r'roles', views.RolViewSet)
 router.register(r'cotizaciones', views.CotizacionViewSet)

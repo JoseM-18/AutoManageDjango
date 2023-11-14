@@ -30,7 +30,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'www.jose-manuel.tech',
     'jose-manuel.tech',
-    '127.0.0.1'
+    '127.0.0.1',
+    'localhost'
 ]
 
 
