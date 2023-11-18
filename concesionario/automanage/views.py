@@ -98,6 +98,8 @@ class PiezasVehiculoViewSet(viewsets.ModelViewSet):
 class InventarioPiezaViewSet(viewsets.ModelViewSet):
     queryset = InventarioPieza.objects.all()
     serializer_class = InventarioPiezaSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = InventarioPiezaFilter
 
 
 class InventarioVehiculoViewSet(viewsets.ModelViewSet):

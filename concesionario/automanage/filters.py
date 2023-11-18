@@ -39,3 +39,14 @@ class InventarioVehiculoFilter(django_filters.FilterSet):
             'color': ['exact', 'icontains', 'in'],
             'kilometraje': ['lt', 'gt'],
         }
+
+
+class InventarioPiezaFilter(django_filters.FilterSet):
+
+    class Meta:
+        model = InventarioPieza
+        fields = {
+            'pieza': ['exact', 'in'],
+            'sucursal': ['exact', 'in'],
+            'cantidad_disponible': ['lt', 'gt', 'exact']
+        }

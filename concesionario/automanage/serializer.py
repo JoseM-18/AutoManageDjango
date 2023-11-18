@@ -87,7 +87,7 @@ class InventarioPiezaSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventarioPieza
         fields = ("cantidad_disponible", "pieza",
-                  "surcursal", "pieza_id", "sucursal_id")
+                  "sucursal", "pieza_id", "sucursal_id")
         depth = 1
 
 

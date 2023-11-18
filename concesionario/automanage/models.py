@@ -109,7 +109,7 @@ class Vehiculo(models.Model):
 
 class InventarioVehiculo(models.Model):
     vehiculo = models.ForeignKey(
-        Vehiculo, models.DO_NOTHING, db_column='id_vehiculo', blank=True, null=True)
+        Vehiculo, models.DO_NOTHING, db_column='id_vehiculo', blank=False, null=False)
     sucursal = models.ForeignKey(
         Sucursal, models.DO_NOTHING, db_column='id_sucursal')
     modelo = models.CharField(max_length=10, blank=True, null=True)
