@@ -48,7 +48,7 @@ class PiezaSerializer(serializers.ModelSerializer):
 
 class UsuarioSerializer(serializers.ModelSerializer):
     rol_id = serializers.IntegerField(write_only=True)
-    sucursal_id = serializers.IntegerField(write_only=True)
+    sucursal_id = serializers.IntegerField(write_only=True, allow_null=True)
     id = serializers.IntegerField(read_only=True)
 
     class Meta:
