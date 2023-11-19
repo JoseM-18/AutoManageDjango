@@ -48,12 +48,13 @@ class PiezaSerializer(serializers.ModelSerializer):
 
 class UsuarioSerializer(serializers.ModelSerializer):
     rol_id = serializers.IntegerField(write_only=True)
-    sucursal_id = serializers.IntegerField(write_only=True)
+    sucursal_id = serializers.IntegerField(write_only=True, allow_null=True)
+    id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Usuario
-        fields = ("email", "nombre", "apellido", "rol", "estado", "is_active", "is_admin",
-                  "is_staff", "date_joined", "identificacion", "sucursal", "rol_id", "sucursal_id")
+        fields = ("id", "email", "nombre", "apellido", "rol", "estado", "is_active", "is_admin",
+                  "is_staff", "date_joined", "identificacion", "sucursal", "rol_id", "sucursal_id", "password", "last_login", "is_superuser")
         depth = 1
 
 
@@ -86,7 +87,7 @@ class InventarioPiezaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InventarioPieza
-        fields = ("cantidad_disponible", "pieza",
+        fields = ("id", "cantidad_disponible", "pieza",
                   "sucursal", "pieza_id", "sucursal_id")
         depth = 1
 
@@ -97,7 +98,7 @@ class InventarioVehiculoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InventarioVehiculo
-        fields = ("modelo", "condicion", "estado", "placa", "kilometraje",
+        fields = ("id", "modelo", "condicion", "estado", "placa", "kilometraje",
                   "color", "vehiculo", "vehiculo_id", "sucursal", "sucursal_id")
         depth = 1
 
