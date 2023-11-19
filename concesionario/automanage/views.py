@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
 from rest_framework.decorators import action
+from django.db.utils import IntegrityError
 
 
 class HelloView(APIView):
@@ -43,6 +44,22 @@ class SucursalViewSet(viewsets.ModelViewSet):
 class PiezaViewSet(viewsets.ModelViewSet):
     queryset = Pieza.objects.all()
     serializer_class = PiezaSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Override the destroy method to customize object deletion.
+        """
+        instance = self.get_object()
+
+        # Your custom logic goes here before deleting the object
+        try:
+            # Your custom logic goes here before deleting the object
+            self.perform_destroy(instance)
+        except IntegrityError as e:
+            # Handle IntegrityError and return a 409 Conflict response
+            return Response({"detail": "No es posible eliminar la Pieza por que se encuentra en uso."}, status=status.HTTP_409_CONFLICT)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):
