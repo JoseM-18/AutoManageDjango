@@ -17,7 +17,7 @@ router.register(r'orden_piezas', views.OrdenPiezaViewSet)
 router.register(r'piezas_vehiculo', views.PiezasVehiculoViewSet)
 router.register(r'inventario_piezas', views.InventarioPiezaViewSet)
 router.register(r'inventario_vehiculos', views.InventarioVehiculoViewSet)
-router.register(r'ordenes', views.OrdenPiezaViewSet)
+router.register(r'ordenes', views.OrdenViewSet)
 router.register(r'ventas', views.VentaViewSet)
 # router.register(r'hello', views.HelloView.as_view())
 
