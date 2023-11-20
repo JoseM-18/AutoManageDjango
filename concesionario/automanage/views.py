@@ -65,6 +65,8 @@ class PiezaViewSet(viewsets.ModelViewSet):
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UsuarioFilter
 
     def create(self, request, *args, **kwargs):
         password = request.data.get('password')
@@ -90,6 +92,16 @@ class UsuarioViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Contraseña actualizada correctamente'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['GET'])
+    def buscar_por_identificacion(self, request):
+        identificacion = request.GET["identificacion"]
+        try:
+            usuario = Usuario.objects.get(identificacion=identificacion)
+            serializer = self.get_serializer(usuario)
+            return Response(serializer.data)
+        except Usuario.DoesNotExist:
+            return Response({"detail": "Usuario no encontrado"}, status=404)
 
 
 class RolViewSet(viewsets.ModelViewSet):

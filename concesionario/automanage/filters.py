@@ -50,3 +50,15 @@ class InventarioPiezaFilter(django_filters.FilterSet):
             'sucursal': ['exact', 'in'],
             'cantidad_disponible': ['lt', 'gt', 'exact']
         }
+
+
+class UsuarioFilter(django_filters.FilterSet):
+
+    class Meta:
+        model = Usuario
+        fields = {
+            'email': ['exact', 'in'],
+            'identificacion': ['exact', 'in', 'contains'],
+            'nombre': ['exact', 'in', 'contains'],
+            'apellido': ['exact', 'in', 'contains']
+        }
