@@ -117,6 +117,8 @@ class CotizacionViewSet(viewsets.ModelViewSet):
 class OrdenPiezaViewSet(viewsets.ModelViewSet):
     queryset = OrdenPieza.objects.all()
     serializer_class = OrdenPiezaSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OrdenPiezaFilter
 
 
 class PiezasVehiculoViewSet(viewsets.ModelViewSet):

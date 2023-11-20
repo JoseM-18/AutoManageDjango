@@ -60,5 +60,14 @@ class UsuarioFilter(django_filters.FilterSet):
             'email': ['exact', 'in'],
             'identificacion': ['exact', 'in', 'contains'],
             'nombre': ['exact', 'in', 'contains'],
-            'apellido': ['exact', 'in', 'contains']
+            'apellido': ['exact', 'in', 'contains'],
+        }
+
+class OrdenPiezaFilter (django_filters.FilterSet):
+    class Meta:
+        model = OrdenPieza
+        fields = {
+            'pieza': ['exact', 'in'],
+            'orden': ['exact', 'in'],
+            'cantidad': ['lt', 'gt', 'exact']
         }
