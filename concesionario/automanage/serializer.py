@@ -66,7 +66,8 @@ class ChangePasswordSerializer(serializers.Serializer):
 class CotizacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cotizacion
-        fields = '__all__'
+        fields = ("id", "fecha_creacion", "fecha_vencimiento",
+                  "valor_total", "inventario_vehiculos", "vendedor", "cliente")
 
 
 class OrdenPiezaSerializer(serializers.ModelSerializer):
@@ -112,4 +113,27 @@ class OrdenSerializer(serializers.ModelSerializer):
 class VentaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Venta
+        # fields = ("id", "fecha_creacion", "estado", "valor_total",
+        #           "inventario_vehiculo", "cotizacion", "vendedor", "cliente")
+        fields = '__all__'
+
+
+class VentaSerializerDetailed(serializers.ModelSerializer):
+    inventario_vehiculo = InventarioVehiculoSerializer()
+
+    class Meta:
+        model = Venta
+        # fields = ("id", "fecha_creacion", "estado", "valor_total",
+        #           "inventario_vehiculo", "cotizacion", "vendedor", "cliente")
+        fields = '__all__'
+
+
+class CotizacionSerializerDetailed(serializers.ModelSerializer):
+    inventario_vehiculos = InventarioVehiculoSerializer()
+    cliente = UsuarioSerializer()
+
+    class Meta:
+        model = Cotizacion
+        # fields = ("id", "fecha_creacion", "estado", "valor_total",
+        #           "inventario_vehiculo", "cotizacion", "vendedor", "cliente")
         fields = '__all__'

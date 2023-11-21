@@ -1,6 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
-from .serializer import VehiculoSerializer, SucursalSerializer, PiezaSerializer,  UsuarioSerializer, RolSerializer, CotizacionSerializer, OrdenPiezaSerializer, PiezasVehiculoSerializer, InventarioPiezaSerializer, InventarioVehiculoSerializer, OrdenSerializer, VentaSerializer, ChangePasswordSerializer
+from .serializer import CotizacionSerializerDetailed, VehiculoSerializer, SucursalSerializer, PiezaSerializer,  UsuarioSerializer, RolSerializer, CotizacionSerializer, OrdenPiezaSerializer, PiezasVehiculoSerializer, InventarioPiezaSerializer, InventarioVehiculoSerializer, OrdenSerializer, VentaSerializer, ChangePasswordSerializer, VentaSerializerDetailed
 from .models import Vehiculo, Sucursal, Pieza,  Usuario, Rol, Cotizacion, OrdenPieza, PiezasVehiculo, InventarioPieza, InventarioVehiculo, Orden, Venta
 from .filters import *
 from .permission import UserPermission
@@ -113,6 +113,17 @@ class CotizacionViewSet(viewsets.ModelViewSet):
     queryset = Cotizacion.objects.all()
     serializer_class = CotizacionSerializer
 
+    def get_serializer_class(self):
+        if self.action == 'detalle':
+            return CotizacionSerializerDetailed
+        return CotizacionSerializer
+
+    @action(detail=False, methods=['GET'])
+    def detalle(self, request):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class OrdenPiezaViewSet(viewsets.ModelViewSet):
     queryset = OrdenPieza.objects.all()
@@ -148,3 +159,14 @@ class OrdenViewSet(viewsets.ModelViewSet):
 class VentaViewSet(viewsets.ModelViewSet):
     queryset = Venta.objects.all()
     serializer_class = VentaSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'detalle':
+            return VentaSerializerDetailed
+        return VentaSerializer
+
+    @action(detail=False, methods=['GET'])
+    def detalle(self, request):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
