@@ -185,6 +185,7 @@ class Orden(models.Model):
     valor_total = models.DecimalField(
         max_digits=19, decimal_places=4, blank=True, null=True)
     estado = models.CharField(max_length=150, blank=True, null=False)
+    descripcion = models.TextField(blank=True, null=False)
 
     class Meta:
         managed = True
