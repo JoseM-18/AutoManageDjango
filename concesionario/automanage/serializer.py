@@ -108,6 +108,7 @@ class OrdenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Orden
         fields = '__all__'
+        depth = 1
 
 
 class VentaSerializer(serializers.ModelSerializer):
