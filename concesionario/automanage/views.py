@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
 from rest_framework.decorators import action
 from django.db.utils import IntegrityError
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class HelloView(APIView):
@@ -154,6 +155,11 @@ class InventarioVehiculoViewSet(viewsets.ModelViewSet):
 class OrdenViewSet(viewsets.ModelViewSet):
     queryset = Orden.objects.all()
     serializer_class = OrdenSerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
 
 class VentaViewSet(viewsets.ModelViewSet):
