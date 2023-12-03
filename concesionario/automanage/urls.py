@@ -25,5 +25,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('hello/', views.HelloView.as_view(), name='hello'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+     path('upload-image/', views.ImageUploadView.as_view(), name='upload-image')
 ]

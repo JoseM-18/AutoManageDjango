@@ -12,6 +12,16 @@ from django.contrib.auth import authenticate
 from rest_framework.decorators import action
 from django.db.utils import IntegrityError
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.http import JsonResponse
+import os
+import base64
+import json
+import requests
+from dotenv import load_dotenv
+from django.db import connection
+
+load_dotenv() 
+
 
 
 class HelloView(APIView):
@@ -176,3 +186,116 @@ class VentaViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+class ImageUploadView(APIView):
+    def post(self, request, *args, **kwargs):
+        image_file = request.FILES.get('image')
+        if not (image_file is None):
+            base64_image = base64.b64encode(image_file.read()).decode('utf-8')
+            api_key = os.getenv('OPENAI_API_KEY')
+            headers = {
+              "Content-Type": "application/json",
+              "Authorization": f"Bearer {api_key}"
+            }
+
+            payload = {
+              "model": "gpt-4-vision-preview",
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "give me a json only with 3 things the value: the marca:brand, modelo:brand-model and color:color of the car in spanish, if the image is not of a car it only returns the json with the field empty."
+                    },
+                    {
+                      "type": "image_url",
+                      "image_url": {
+                        "url": f"data:image/jpeg;base64,{base64_image}"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "max_tokens": 300
+            }
+
+            response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+
+            response_data = response.json()
+            content = response_data['choices'][0]['message']['content'].replace('```json', '').replace('```', '').strip()
+            
+            try: 
+               parsed_data = json.loads(content)
+                
+               brand, model, color = parsed_data.get('marca'), parsed_data.get('modelo'), parsed_data.get('color')
+               if all([brand, model, color]):
+                   sqlQueryData = self.postSQL(brand, color, model, request, *args, **kwargs)
+
+                   return JsonResponse(sqlQueryData)
+               else:
+                    return JsonResponse({'error': "algunos campos estan vacios en la sql"}, status=400)
+
+            except (KeyError, IndexError, json.JSONDecodeError, ValueError) as e:
+               return JsonResponse({'error': str(e)}, status=400)
+    
+    def get_car_info(self, brand, state, color, model,queryOption="default"):
+        query = """
+        SELECT DISTINCT direccion
+        FROM inventario_vehiculos iv
+        INNER JOIN vehiculos v ON iv.id_vehiculo = v.id
+        INNER JOIN sucursales s ON iv.id_sucursal = s.id
+        WHERE (
+            LOWER(v.marca) = LOWER(%s)
+            AND LOWER(iv.estado) = LOWER(%s)
+            AND LOWER(iv.color) = LOWER(%s)
+            AND LOWER(v.linea) LIKE LOWER(%s)
+        )
+        """
+        query2 = """
+        SELECT DISTINCT direccion, color, marca, linea, estado
+        FROM inventario_vehiculos iv
+        INNER JOIN vehiculos v ON iv.id_vehiculo = v.id
+        INNER JOIN sucursales s ON iv.id_sucursal = s.id
+        WHERE (
+            (LOWER(v.marca) = LOWER(%s) AND LOWER(iv.estado) = LOWER(%s))
+            OR (LOWER(iv.color) = LOWER(%s)  AND  LOWER(iv.estado) = LOWER(%s))
+        )
+        """
+        
+        with connection.cursor() as cursor:
+            if queryOption == "default":
+                cursor.execute(query, [brand.lower(), state.lower(), color.lower(), f'%{model.lower()}%'])
+                result = cursor.fetchall()
+
+                return result
+            
+            cursor.execute(query2, [brand.lower(), state.lower(), color.lower(), state.lower() ])
+            result = cursor.fetchall()
+
+            return result
+            
+    def postSQL(self, brand, color,model, request, *args, **kwargs):
+        car_info = self.get_car_info(brand, 'disponible', color, model)
+        if car_info != [] :
+            response_data = {
+            'car_info': car_info,
+            "exist":True,
+            "auto": brand + " " + model + " " + color
+            }
+
+            return response_data
+        
+        car_info = self.get_car_info(brand, 'disponible', color, model, queryOption="query2")
+        response_data = {
+        'car_info': car_info,
+        "exist":False,
+        "auto": brand + " " + model + " " + color
+        }
+
+        return response_data
+        
+    def is_empty(self,value):
+        return value is None or value == ""
+
+
