@@ -50,6 +50,18 @@ class SucursalViewSet(viewsets.ModelViewSet):
     serializer_class = SucursalSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = SucursalFilter
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['GET'])
+    def listar_by_rol(self, request):
+        user = request.user
+        if user.is_admin or user.rol.nombre in ['Gerente']:
+            queryset = self.get_queryset()
+        else:
+            queryset = Sucursal.objects.filter(id=user.sucursal.id)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class PiezaViewSet(viewsets.ModelViewSet):
@@ -131,7 +143,13 @@ class CotizacionViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['GET'])
     def detalle(self, request):
-        queryset = self.get_queryset()
+        sucursal_id = self.request.query_params.get('sucursal_id')
+        if sucursal_id:
+            queryset = Cotizacion.objects.filter(
+                inventario_vehiculos__sucursal__id=sucursal_id)
+        else:
+            queryset = self.get_queryset()
+
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -183,7 +201,13 @@ class VentaViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['GET'])
     def detalle(self, request):
-        queryset = self.get_queryset()
+        sucursal_id = self.request.query_params.get('sucursal_id')
+        if sucursal_id:
+            queryset = Venta.objects.filter(
+                inventario_vehiculo__sucursal__id=sucursal_id)
+        else:
+            queryset = self.get_queryset()
+
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 

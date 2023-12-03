@@ -6,9 +6,9 @@ class UserPermission(permissions.BasePermission):
         self.roles_required = roles_required
 
     def has_permission(self, request, view):
-        print(request.user)
-        print(request.user.rol.nombre)
-        print(self.roles_required)
+        # print(request.user)
+        # print(request.user.rol.nombre)
+        # print(self.roles_required)
         if request.user and request.user.is_authenticated:
             if request.user.is_admin or request.user.rol.nombre == 'Admin':
                 return True
