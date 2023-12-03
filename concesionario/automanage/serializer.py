@@ -105,9 +105,14 @@ class InventarioVehiculoSerializer(serializers.ModelSerializer):
 
 
 class OrdenSerializer(serializers.ModelSerializer):
+    sucursal_id = serializers.IntegerField(write_only=True)
+    cliente_id = serializers.IntegerField(write_only=True)
+    vendedor_id = serializers.IntegerField(write_only=True)
+
     class Meta:
         model = Orden
-        fields = '__all__'
+        fields = ("id", "fecha_creacion", "fecha_finalizacion", "tipo", "placa", "valor_mano_obra",
+                  "valor_total", "estado", "descripcion", "sucursal", "sucursal_id", "vendedor", "vendedor_id", "cliente", "cliente_id")
         depth = 1
 
 
