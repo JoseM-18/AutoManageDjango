@@ -1,6 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
-from .serializer import CotizacionSerializerDetailed, VehiculoSerializer, SucursalSerializer, PiezaSerializer,  UsuarioSerializer, RolSerializer, CotizacionSerializer, OrdenPiezaSerializer, PiezasVehiculoSerializer, InventarioPiezaSerializer, InventarioVehiculoSerializer, OrdenSerializer, VentaSerializer, ChangePasswordSerializer, VentaSerializerDetailed
+from .serializer import CotizacionSerializerDetailed, VehiculoSerializer, SucursalSerializer, PiezaSerializer,  UsuarioSerializer, RolSerializer, CotizacionSerializer, OrdenPiezaSerializer, PiezasVehiculoSerializer, InventarioPiezaSerializer, InventarioVehiculoSerializer, OrdenSerializer, VentaSerializer, ChangePasswordSerializer, VentaSerializerDetailed, ChangePasswordLostSerializer
 from .models import Vehiculo, Sucursal, Pieza,  Usuario, Rol, Cotizacion, OrdenPieza, PiezasVehiculo, InventarioPieza, InventarioVehiculo, Orden, Venta
 from .filters import *
 from .permission import UserPermission
@@ -20,6 +20,8 @@ import json
 import requests
 from dotenv import load_dotenv
 from django.db import connection
+from django.core.mail import EmailMessage
+from django.conf import settings
 
 load_dotenv()
 
@@ -115,6 +117,27 @@ class UsuarioViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Contraseña actualizada correctamente'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['post'])
+    def change_password_lost(self, request):
+        email = request.data.get('email')
+        print(request.data)
+        serializer = ChangePasswordLostSerializer(data=request.data)
+
+        if serializer.is_valid():
+            new_password = serializer.validated_data['new_password']
+
+            try:
+                user = Usuario.objects.get(email=email)
+            except Usuario.DoesNotExist:
+                return Response({'detail': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+            user.set_password(new_password)
+            user.save()
+
+            return Response({'detail': 'Contraseña actualizada correctamente'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['GET'])
     def buscar_por_identificacion(self, request):
@@ -125,12 +148,20 @@ class UsuarioViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         except Usuario.DoesNotExist:
             return Response({"detail": "Usuario no encontrado"}, status=404)
-
+        
+    @action(detail=False, methods=['GET'])
+    def buscar_por_correo(self, request):
+        email = request.GET["email"]
+        try:
+            usuario = Usuario.objects.get(email=email)
+            serializer = self.get_serializer(usuario)
+            return Response({"detail": "Usuario encontrado"}, status=200)
+        except Usuario.DoesNotExist:
+            return Response({"detail": "Usuario no encontrado"}, status=404)
 
 class RolViewSet(viewsets.ModelViewSet):
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
-
 
 class CotizacionViewSet(viewsets.ModelViewSet):
     queryset = Cotizacion.objects.all()
@@ -346,3 +377,24 @@ class ImageUploadView(APIView):
 
     def is_empty(self, value):
         return value is None or value == ""
+    
+class EnviarCorreoViewSet(viewsets.ViewSet):
+
+    @action(detail=False, methods=['post'])
+    def send_email(self, request):
+
+        codigo = request.data.get('codigo')
+        emailToSender = request.data.get('email')
+
+        # Convertir 'codigo' a cadena antes de concatenar
+        codigo_str = str(codigo)
+
+        email = EmailMessage(
+            'Mensaje de Automanage',
+            f'Usted ha solicitado un cambio de contraseña para su cuenta de Automanage. Este es el código que debe ingresar para cambiar su contraseña: {codigo_str}',
+            settings.EMAIL_HOST_USER,
+            [emailToSender],
+        )
+        email.fail_silently = False
+        email.send()
+        return Response({'detail': 'Correo enviado correctamente'}, status=status.HTTP_200_OK)

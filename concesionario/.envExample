@@ -1,2 +1,4 @@
 #este archivo se debe llamar .env y debe tener la apikey de openai
 OPENAI_API_KEY="exampleapikey"
+EMAIL_HOST_USER="example"
+EMAIL_HOST_PASSWORD="example"

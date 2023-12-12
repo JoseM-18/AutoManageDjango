@@ -19,6 +19,7 @@ router.register(r'inventario_piezas', views.InventarioPiezaViewSet)
 router.register(r'inventario_vehiculos', views.InventarioVehiculoViewSet)
 router.register(r'ordenes', views.OrdenViewSet)
 router.register(r'ventas', views.VentaViewSet)
+router.register(r'enviar_email', views.EnviarCorreoViewSet, basename='enviar_email')
 # router.register(r'hello', views.HelloView.as_view())
 
 urlpatterns = [
